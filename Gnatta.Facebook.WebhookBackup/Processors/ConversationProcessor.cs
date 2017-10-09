@@ -42,6 +42,7 @@ namespace Gnatta.Facebook.WebhookBackup.Processors
             while (DateTime.UtcNow < _end)
             {
                 ProcessConversationPages();
+                _log.Info($"Process complete, sleeping for {_options.PollInterval}s");
                 Thread.Sleep(TimeSpan.FromSeconds(_options.PollInterval));
             }
         }
