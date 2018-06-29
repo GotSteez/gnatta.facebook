@@ -19,7 +19,7 @@ namespace Gnatta.Facebook.WebhookBackup.Processors
         private readonly FacebookPageDetails _page;
         private readonly DateTime _start;
         private readonly DateTime _end;
-        private readonly FeedOptions _options;
+        private readonly Options _options;
         
         // Stores the feed Id and the Updated Date
         private readonly Dictionary<string, DateTime> _seenFeed;
@@ -31,7 +31,7 @@ namespace Gnatta.Facebook.WebhookBackup.Processors
             FacebookPageDetails page, 
             DateTime start,
             DateTime end, 
-            FeedOptions options)
+            Options options)
         {
             _log = log;
             _client = client;

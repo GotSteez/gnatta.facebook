@@ -3,11 +3,16 @@ using CommandLine;
 
 namespace Gnatta.Facebook.WebhookBackup.Commands
 {
-    [Verb("conv", HelpText = "Process conversations from public API")]
-    public class ConversationOptions
+    public class Options
     {
         [Value(0, Required = true, HelpText = "Token of the page to read conversations from.")]
         public string PageToken { get; set; }
+        
+        [Option("feed", Default = false)]
+        public bool Feed { get; set; }
+        
+        [Option("conv", Default = false)]
+        public bool Conv { get; set; }
 
         [Option("verbose", Default = false)]
         public bool Verbose { get; set; }

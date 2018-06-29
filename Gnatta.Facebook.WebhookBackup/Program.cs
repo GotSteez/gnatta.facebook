@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CommandLine;
 using Facebook;
 using Gnatta.Facebook.Logging;
@@ -12,23 +13,50 @@ namespace Gnatta.Facebook.WebhookBackup
     {
         private static ILog _log;
 
-        static int Main(string[] args)
+        static void Main(string[] args)
         {
-            return Parser.Default
-                .ParseArguments<ConversationOptions, FeedOptions>(args)
-                .MapResult<ConversationOptions, FeedOptions, int>(RunConversation, RunFeed, errs => 1);
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed(opts => Run(opts).Wait());
         }
 
-        private static int RunFeed(FeedOptions options)
+        private static async Task Run(Options opts)
         {
-            _log = LogFactory.Build();
+            _log = LogFactory.Build(opts.Verbose);
+
+            Task convTask = null;
+            Task feedTask = null;
+            
+            if (opts.Conv)
+            {
+                convTask = Task.Run(() => RunConversation(opts));
+            }
+
+            if (opts.Feed)
+            {
+                feedTask = Task.Run(() => RunFeed(opts));
+            }
+
+            if (convTask != null)
+            {
+                await convTask;
+            }
+
+            if (feedTask != null)
+            {
+                await feedTask;
+            }
+        }
+
+        private static int RunFeed(Options options)
+        {   
             _log.Info("Processing Feed");
+            
             // Validate options
             DateTime start, end;
             try
             {
-                start = options.StartTime ?? DateTime.UtcNow.AddMinutes(-15);
-                end = options.EndTime ?? DateTime.UtcNow.AddMinutes(1);
+                start = GetStart(options.StartTime);
+                end = GetEnd(options.EndTime);
             }
             catch (Exception e)
             {
@@ -70,17 +98,16 @@ namespace Gnatta.Facebook.WebhookBackup
             return 0;
         }
 
-        private static int RunConversation(ConversationOptions options)
+        private static int RunConversation(Options options)
         {
-            _log = LogFactory.Build(options.Verbose);
             _log.Info("Processing Conversations");
 
             // Validate options
             DateTime start, end;
             try
             {
-                start = options.StartTime ?? DateTime.UtcNow.AddMinutes(-15);
-                end = options.EndTime ?? DateTime.UtcNow.AddMinutes(1);
+                start = GetStart(options.StartTime);
+                end = GetEnd(options.EndTime);
             }
             catch (Exception e)
             {
@@ -120,6 +147,16 @@ namespace Gnatta.Facebook.WebhookBackup
             }
 
             return 0;
+        }
+
+        private static DateTime GetStart(DateTime? start)
+        {
+            return start ?? DateTime.UtcNow.AddMinutes(-15);
+        }
+
+        private static DateTime GetEnd(DateTime? end)
+        {
+            return end ?? DateTime.UtcNow.AddMinutes(1);
         }
     }
 }

@@ -19,13 +19,13 @@ namespace Gnatta.Facebook.WebhookBackup.Processors
         private readonly FacebookPageDetails _page;
         private readonly DateTime _start;
         private readonly DateTime _end;
-        private readonly ConversationOptions _options;
+        private readonly Options _options;
 
         private readonly Dictionary<string, DateTime> _seenConversations;
 
         public ConversationProcessor(
             ILog log, FacebookClient client, FacebookPageDetails page, DateTime start, 
-            DateTime end, ConversationOptions options)
+            DateTime end, Options options)
         {
             _log = log;
             _client = client;
