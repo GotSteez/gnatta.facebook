@@ -65,10 +65,14 @@
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Helpers\FacebookWebhookBuilder.cs" />
     <Compile Include="Models\FacebookConversationPage.cs" />
+    <Compile Include="Models\FacebookFeedResult.cs" />
+    <Compile Include="Models\FacebookFromDetails.cs" />
     <Compile Include="Models\FacebookPageDetails.cs" />
     <Compile Include="Models\FacebookPaging.cs" />
     <Compile Include="Models\FacebookWebhook.cs" />
     <Compile Include="Processors\ConversationProcessor.cs" />
+    <Compile Include="Processors\FeedProcessor.cs" />
+    <Compile Include="Processors\IProcessor.cs" />
     <Compile Include="Processors\OutboundWebhookProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

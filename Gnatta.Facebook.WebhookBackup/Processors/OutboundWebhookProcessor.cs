@@ -29,7 +29,7 @@ namespace Gnatta.Facebook.WebhookBackup.Processors
         {
             var body = JsonConvert.SerializeObject(model);
 
-            // default to console if there is no endpoint
+            // Default to console if there is no endpoint
             if (string.IsNullOrWhiteSpace(_endpoint))
             {
                 _log.Info(body);

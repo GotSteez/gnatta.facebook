@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Gnatta.Facebook.WebhookBackup.Processors
 {
-    public class ConversationProcessor
+    public class ConversationProcessor : IProcessor
     {
         private const string CONVERSATIONS_ENDPOINT = "me/conversations";
 
