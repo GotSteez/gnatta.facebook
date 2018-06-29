@@ -12,7 +12,7 @@ namespace Gnatta.Facebook.WebhookBackup.Processors
 {
     public class FeedProcessor : IProcessor
     {
-        private const string FEED_ENDPOINT = "me/feed?fields=id,from,created_time,updated_time,message,type,status_type";
+        private const string FeedEndpoint = "me/feed?fields=id,from,created_time,updated_time,message,type,status_type";
 
         private readonly ILog _log;
         private readonly FacebookClient _client;
@@ -38,6 +38,8 @@ namespace Gnatta.Facebook.WebhookBackup.Processors
             _start = start;
             _end = end;
             _options = options;
+            
+            _seenFeed = new Dictionary<string, DateTime>();
         }
 
         public void Process()
@@ -49,13 +51,6 @@ namespace Gnatta.Facebook.WebhookBackup.Processors
                 Thread.Sleep(TimeSpan.FromSeconds(_options.PollInterval));
             }
         }
-
-        // needs a check in place to make sure we only get feed data from the designated start time 
-        // create an enum of seen feed
-        // use the updated date to figure out the verb
-        // map based on the status_type
-        // verb based on the updated_date and if we have seen it before 
-        // type always appears to be status 
         
         private void ProcessPageFeed()
         {
@@ -64,7 +59,7 @@ namespace Gnatta.Facebook.WebhookBackup.Processors
 
             while (cursors != null)
             {
-                _log.Debug($"{FEED_ENDPOINT} {++pageNumber}");
+                _log.Debug($"{FeedEndpoint} {++pageNumber}");
 
                 object parameters;
                 if (string.IsNullOrWhiteSpace(cursors?.after))
@@ -76,7 +71,7 @@ namespace Gnatta.Facebook.WebhookBackup.Processors
                     parameters = new {limit = _options.PageSize, cursors?.after};
                 }
                 
-                var current = _client.Get<FacebookFeedResult>(FEED_ENDPOINT, parameters);
+                var current = _client.Get<FacebookFeedResult>(FeedEndpoint, parameters);
 
                 cursors = current.paging?.cursors;
 

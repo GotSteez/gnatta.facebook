@@ -45,13 +45,13 @@ namespace Gnatta.Facebook.WebhookBackup.Helpers
                         {
                             value = new FacebookWebhookFeedValue
                             {
-                                item = MapFeedItem(feed.status_type),
+                                item = MapFeedItem(feed),
                                 created_time = feed.created_time.ToUnix(),
                                 from = feed.from,
                                 message = feed.message,
                                 post_id = feed.id,
                                 published = 1,
-                                verb = MapFeedVerb(feed)
+                                verb = MapFeedVerb()
                             }
                         })
                     }
@@ -59,22 +59,28 @@ namespace Gnatta.Facebook.WebhookBackup.Helpers
             };
         }
 
-        private static string MapFeedItem(string statusType)
+        private static string MapFeedItem(FacebookPageFeedItem feed)
         {
-            switch (statusType)
+//            // Assuming if the updated time isn't the same as the created_time then the post/status has updated with a comment?
+//            if (feed.updated_time != feed.created_time)
+//            {
+//                return "comment";
+//            }
+            
+            switch (feed.status_type)
             {
                 case "mobile_status_update":
                     return "status";
                 case "wall_post":
                     return "post";
                 default:
-                    throw new Exception($"Unknown status_type field provided {statusType}");
+                    throw new Exception($"Unknown status_type field provided {feed.status_type}");
             }
         }
 
-        private static string MapFeedVerb(FacebookPageFeedItem feed)
+        private static string MapFeedVerb()
         {
-            return $"{MapFeedItem(feed.status_type)}:add";
+            return "add";
         }
     }
 }
